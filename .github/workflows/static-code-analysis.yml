@@ -4,13 +4,10 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
-  pull_request_target:
-    branches: [master]
 
 jobs:
   codeql:
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request_target'
     permissions:
       security-events: write
     steps:
@@ -32,7 +29,8 @@ jobs:
 
   cppcheck:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request_target'
+    permissions:
+      pull-requests: write
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
