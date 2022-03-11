@@ -7,8 +7,6 @@ int main(int argc, char **argv)
     }
 
     const char *unused;
-    const char *unused3;
-    const char *unused4;
 
     return 0;
 }
