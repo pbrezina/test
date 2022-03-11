@@ -6,5 +6,7 @@ int main(int argc, char **argv)
 
     }
 
+    const char *unused;
+
     return 0;
 }
