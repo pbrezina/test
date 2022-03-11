@@ -1,0 +1,49 @@
+name: "Static code analysis"
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  pull_request_target:
+    branches: [master]
+
+jobs:
+  codeql:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request_target'
+    permissions:
+      security-events: write
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: cpp
+        queries: +security-and-quality
+
+    - name: Compile
+      run: |
+        gcc main.c
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
+
+  cppcheck:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request_target'
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+        persist-credentials: false
+
+    - name: Perform cppcheck analysis
+      uses: myml/action-cppcheck@v0.0.7
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        repository: ${{ github.repository }}
+        pull_request_id: ${{ github.event.pull_request.number }}
+        allow_approve: false
